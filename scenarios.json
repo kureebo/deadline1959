@@ -1,0 +1,107 @@
+{
+  "pre_game": {
+    "login": {
+      "title": "Welcome to the Game",
+      "description": "Please enter your class and group members' names to begin:",
+      "fields": [
+        { "label": "Class Name", "placeholder": "Enter your class name", "type": "text", "id": "class-name", "required": true },
+        { "label": "Group Members", "placeholder": "Enter group members' names (comma-separated)", "type": "text", "id": "group-members", "required": true }
+      ],
+      "submit_button": "Submit"
+    },
+    "instructions": {
+      "title": "Instructions",
+      "sections": [
+        {
+          "header": "CONTEXT",
+          "content": "The year is 1956. You are Lim Yew Hock, newly appointed Chief Minister of Singapore and leader of the ruling party of Singapore, the Labour Front. You will be facing some huge challenges to your power over the course of the next few years and you will be meeting some of the more colourful characters in Singapore’s history. How you interact with them and your decisions at certain crossroads will determine whether you get the biggest prize of all, the Prime Ministership of a self-governing Singapore!"
+        },
+        {
+          "header": "AIM OF THE GAME",
+          "content": "Win the 1959 elections. You will have to get the support of the people, the trust of the British and outwit your main opponents, the PAP!"
+        },
+        {
+          "header": "KEY DYNAMICS",
+          "content": "The player must achieve 3 things before the last turn of the game (Turn #6):\n- Achieve a certain level of British support\n- Ensure enough voter support for your party, the SPA\n- Prevent support for the PAP from becoming too high."
+        }
+      ],
+      "start_button": "START GAME"
+    }
+  },
+  "factions": [
+    "Singapore People's Alliance (SPA)",
+    "People's Action Party (PAP)",
+    "British"
+  ],
+  "scenarios": [
+    {
+      "scene": 1,
+      "title": "Action towards Leftist Organisations (Preservation of Public Security Ordinance)",
+      "scenario_text": "The increase in recent activities by Leftist agitators in the labour and student unions have disrupted the economy. These Communists and their supporters have made your government look inept and considering what happened to your predecessor David Marshall, that is a dangerous thing indeed. The British have started asking you to do something about this and one way that can curb such acts of violence and chaos is to remove certain current restrictions on the police. This will enable them to detain suspected agitators and threats to society without trial indefinitely. This should serve as a deterrent and solution to these trouble-makers! Some people might get upset with this stricter law but Law and Order are paramount to Singapore’s success! What will YOU do as Chief Minister?",
+      "options": [
+        {
+          "text": "Immediately pass the PPSO, arrest Leftist leaders and disband student unions!",
+          "points": { "British": 10, "SPA": -5, "PAP": 10 },
+          "post_text": "You passed the PPSO and immediately proceed to forcefully shut down the more militant labour unions and also the student unions in the prominent Chinese Middle Schools like Hwa Chong and Chung Cheng. Many of their leaders were arrested and detained without trial under your new powers. The British praised your decisiveness but there have been widespread unhappiness and more protests about your ‘draconian new law.’ Support for your rival party the PAP seemed to have increased as they condemned your action.",
+          "prerequisite_for": 2
+        },
+        {
+          "text": "Negotiate with the Leftists before deciding",
+          "points": { "British": 5, "SPA": 0, "PAP": 5 },
+          "post_text": "Despite negotiations, the Leftists refuse to back down when asked to stop strikes. After several unsuccessful rounds of meetings, you passed the PPSO. The British questions your indecisiveness but praises your attempt to at least appear open to discussions. Some PAP supporters voice out unhappiness that their party insist on violent actions.",
+          "prerequisite_for": 2
+        },
+        {
+          "text": "Do not pass the PPSO",
+          "points": { "British": -10, "SPA": 5, "PAP": 15 },
+          "post_text": "The British chide you for giving in to the Leftists, reminding you of what happened to Marshall when he could not deal with the Hock Lee Bus Riots. You see an increase in support for your party as you show that you are open for peaceful negotiations. However, support for the rival PAP grew even more as they are perceived to have pressurised you into not passing the PPSO."
+        }
+      ]
+    },
+    {
+      "scene": 2,
+      "title": "Singapore Chinese Middle Schools Student Union Riot",
+      "scenario_text": "Emergency! Large numbers of Chinese Middle School students, supported by workers from the major unions, have barricaded themselves in their schools, protesting about the arrest of their friends! What will YOU do as Chief Minister?",
+      "options": [
+        {
+          "text": "Full Force!",
+          "points": { "British": 10, "SPA": -15, "PAP": 10 },
+          "post_text": "You will prove that you are not Marshall! You send in the police with the instructions to break down and tear down the barricades and arrest the students who remain inside, using whatever force is necessary. A few students died but it is a small price to pay to show the British you can be trusted to deal with the Leftist problem. You notice however, that public sentiment, especially amongst the Chinese, have sharply turned against you. Meanwhile, the PAP rails about your abuse of power and how you are just a colonial stooge."
+        },
+        {
+          "text": "Negotiate with students",
+          "points": { "British": -5, "SPA": 10, "PAP": 5 },
+          "post_text": "You want to show firmness but too much of that may lead to anger among the voters. You hold negotiations with the students, using your best Chinese translators, promising that their friends will be released if they sign a promise of good conduct. Eventually, some of the students left the protests peacefully. The rest were detained. The British are disappointed at your apparent giving in to the students but people start seeing you as a reasonable leader. However, the PAP uses the arrests to get supporters for their cause as well."
+        },
+        {
+          "text": "Appeal to students’ parents to persuade them to stand down",
+          "points": { "British": 0, "SPA": 15, "PAP": -5 },
+          "post_text": "You decide to make use of the only thing that even militant Chinese school students are afraid of: Parent Power. In a passionate speech on national TV and radio using your best Chinese dialect skills, you convinced the parents of the protesting students that all these protests will only lead to disrupted studies, possibly holding them back in school for another year. Horrified parents rushed down to the schools to scold and literally drag their children back home. The British are indifferent to your unusual tactic but you gain widespread praise of settling the problem with minimal force. Some PAP supporters started to see them as just making use of young students to accomplish their political agenda and started distancing themselves from the PAP."
+        },
+        {
+          "text": "Give in and remove ban on Leftist organisations while releasing student leaders",
+          "points": { "British": -10, "SPA": 5, "PAP": 10 },
+          "post_text": "“Do you want to go the way of Marshall?!” Governor Goode yelled at you. “Do you want Singapore to become Communist??!” The British are not amused. While some people support you due to your perceived kindness, the PAP now looks like a strong party that forced you to back down."
+        }
+      ]
+    }
+  ],
+  "post_game": {
+    "tabulation": {
+      "criteria": {
+        "outcome_1": {
+          "condition": "SPA > PAP && British > 10",
+          "text": "You have come out ahead in the race to gain the support of the locals in Singapore. With British support secured, the SPA win the 1959 elections! You win!"
+        },
+        "outcome_2": {
+          "condition": "SPA > PAP && British <= 10",
+          "text": "You have come out ahead in the race to gain the support of the locals in Singapore. However, the British do not trust you enough to give internal self-governance. You win the 1959 elections, but at what cost?"
+        },
+        "outcome_3": {
+          "condition": "SPA <= PAP",
+          "text": "The SPA's reputation is tarnished by your hands. After alienating the locals, they flock to the PAP and your party suffers a horrible defeat in the 1959 elections. Game over."
+        }
+      }
+    }
+  }
+}
