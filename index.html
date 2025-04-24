@@ -40,6 +40,16 @@
       display: block;
       margin: 0 auto;
     }
+    form {
+      text-align: center;
+    }
+    input {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      font-size: 16px;
+      width: 80%;
+    }
   </style>
 </head>
 <body>
@@ -52,16 +62,60 @@
   <script>
     // Load JSON file
     async function loadGameData() {
-      const response = await fetch('scenarios.json'); // JSON file in your repository
-      return await response.json();
+      try {
+        const response = await fetch('scenarios.json'); // Adjust the path if necessary
+        if (!response.ok) throw new Error('Failed to load scenarios.json');
+        return await response.json();
+      } catch (error) {
+        console.error('Error loading scenarios.json:', error);
+        document.getElementById('content').innerHTML = '<p>Error loading game data. Please try again later.</p>';
+      }
     }
 
     // Game rendering logic
     async function startGame() {
       const gameData = await loadGameData();
+      if (!gameData) return;
+
       const contentDiv = document.getElementById('content');
       const nextButton = document.getElementById('next-button');
       let currentSceneIndex = 0;
+
+      function renderLogin() {
+        const loginData = gameData.pre_game.login;
+        contentDiv.innerHTML = `
+          <h3>${loginData.title}</h3>
+          <p>${loginData.description}</p>
+          <form id="login-form">
+            ${loginData.fields.map(field => `
+              <label>${field.label}</label>
+              <input type="${field.type}" id="${field.id}" placeholder="${field.placeholder}" required="${field.required}" />
+            `).join('')}
+            <button type="submit">${loginData.submit_button}</button>
+          </form>
+        `;
+
+        document.getElementById('login-form').addEventListener('submit', e => {
+          e.preventDefault();
+          renderInstructions();
+        });
+      }
+
+      function renderInstructions() {
+        const instructions = gameData.pre_game.instructions;
+        contentDiv.innerHTML = `
+          <h3>${instructions.title}</h3>
+          ${instructions.sections.map(section => `
+            <h4>${section.header}</h4>
+            <p>${section.content}</p>
+          `).join('')}
+          <button id="start-game">${instructions.start_button}</button>
+        `;
+
+        document.getElementById('start-game').addEventListener('click', () => {
+          renderScene(gameData.scenarios[currentSceneIndex]);
+        });
+      }
 
       function renderScene(scene) {
         contentDiv.innerHTML = `
@@ -73,11 +127,16 @@
         }
         let optionsHTML = '';
         scene.options.forEach((option, index) => {
-          optionsHTML += `
-            <button onclick="handleOption(${index})">${option.text}</button>
-          `;
+          optionsHTML += `<button class="option-button" data-index="${index}">${option.text}</button>`;
         });
         contentDiv.innerHTML += optionsHTML;
+
+        document.querySelectorAll('.option-button').forEach(button => {
+          button.addEventListener('click', e => {
+            const optionIndex = parseInt(e.target.getAttribute('data-index'), 10);
+            handleOption(optionIndex);
+          });
+        });
       }
 
       function handleOption(optionIndex) {
@@ -95,12 +154,32 @@
           renderScene(gameData.scenarios[currentSceneIndex]);
           nextButton.style.display = 'none';
         } else {
-          contentDiv.innerHTML = `<h3>Game Over</h3>`;
-          nextButton.style.display = 'none';
+          renderEndGame();
         }
       });
 
-      renderScene(gameData.scenarios[currentSceneIndex]);
+      function renderEndGame() {
+        const criteria = gameData.post_game.tabulation.criteria;
+        let outcomeText = 'Game Over.';
+
+        for (const key in criteria) {
+          const condition = criteria[key].condition;
+          const isConditionMet = eval(condition.replace(/SPA|PAP|British/g, match => {
+            return gameData.scenarios.reduce((total, scene) => {
+              return total + (scene.options.find(opt => opt.prerequisite_for === currentSceneIndex)?.points[match] || 0);
+            }, 0);
+          }));
+          if (isConditionMet) {
+            outcomeText = criteria[key].text;
+            break;
+          }
+        }
+
+        contentDiv.innerHTML = `<h3>${outcomeText}</h3>`;
+        nextButton.style.display = 'none';
+      }
+
+      renderLogin(); // Start with the login screen
     }
 
     startGame();
