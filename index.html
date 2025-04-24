@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deadline 1959: CYOA Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #game-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+    }
+    h2, h3 {
+      text-align: center;
+    }
+    button {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      background-color: #007ACC;
+      color: white;
+      border: none;
+    }
+    button:hover {
+      background-color: #005C99;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <h2>Welcome to Deadline 1959</h2>
+    <div id="content"></div>
+    <button id="next-button" style="display: none;">Next</button>
+  </div>
+
+  <script>
+    // Load JSON file
+    async function loadGameData() {
+      const response = await fetch('scenarios.json'); // JSON file in your repository
+      return await response.json();
+    }
+
+    // Game rendering logic
+    async function startGame() {
+      const gameData = await loadGameData();
+      const contentDiv = document.getElementById('content');
+      const nextButton = document.getElementById('next-button');
+      let currentSceneIndex = 0;
+
+      function renderScene(scene) {
+        contentDiv.innerHTML = `
+          <h3>${scene.title}</h3>
+          <p>${scene.scenario_text}</p>
+        `;
+        if (scene.image) {
+          contentDiv.innerHTML += `<img src="${scene.image}" alt="${scene.title}">`;
+        }
+        let optionsHTML = '';
+        scene.options.forEach((option, index) => {
+          optionsHTML += `
+            <button onclick="handleOption(${index})">${option.text}</button>
+          `;
+        });
+        contentDiv.innerHTML += optionsHTML;
+      }
+
+      function handleOption(optionIndex) {
+        const selectedOption = gameData.scenarios[currentSceneIndex].options[optionIndex];
+        contentDiv.innerHTML = `<p>${selectedOption.post_text}</p>`;
+        if (selectedOption.image) {
+          contentDiv.innerHTML += `<img src="${selectedOption.image}" alt="Option Image">`;
+        }
+        nextButton.style.display = 'block';
+      }
+
+      nextButton.addEventListener('click', () => {
+        currentSceneIndex++;
+        if (currentSceneIndex < gameData.scenarios.length) {
+          renderScene(gameData.scenarios[currentSceneIndex]);
+          nextButton.style.display = 'none';
+        } else {
+          contentDiv.innerHTML = `<h3>Game Over</h3>`;
+          nextButton.style.display = 'none';
+        }
+      });
+
+      renderScene(gameData.scenarios[currentSceneIndex]);
+    }
+
+    startGame();
+  </script>
+</body>
+</html>
